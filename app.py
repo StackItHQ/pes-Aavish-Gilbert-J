@@ -4,6 +4,8 @@ import psycopg2
 from kafka import KafkaProducer, KafkaConsumer
 import json
 
+from dbCode.mysqlScript import sync_sheet_from_json
+
 app = Flask(__name__)
 
 # Kafka Configuration
@@ -45,26 +47,10 @@ def mysql_update():
     """
     try:
         data = request.json
-        cursor = mysql_db.cursor()
-
-        # Check if the record exists based on 'id'
-        check_query = "SELECT COUNT(*) FROM your_table WHERE id = %s"
-        cursor.execute(check_query, (data['id'],))
-        result = cursor.fetchone()
-
-        if result[0] > 0:
-            # If the record exists, perform an UPDATE
-            update_query = "UPDATE your_table SET column_name = %s WHERE id = %s"
-            cursor.execute(update_query, (data['value'], data['id']))
-        else:
-            # If the record doesn't exist, perform an INSERT
-            insert_query = "INSERT INTO your_table (id, column_name) VALUES (%s, %s)"
-            cursor.execute(insert_query, (data['id'], data['value']))
-
-        mysql_db.commit()
+        sync_sheet_from_json(mysql_db, data)
 
         # Send the update to Kafka
-        sendToKafka(data)
+        # sendToKafka(data)
 
         return jsonify({"status": "success", "message": "MySQL database updated"}), 200
 
