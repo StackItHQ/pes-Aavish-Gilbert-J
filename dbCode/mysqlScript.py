@@ -2,141 +2,192 @@ import mysql.connector
 import json
 
 def sync_sheet_from_json(db, json_input):
+    cursor = db.cursor()
     try:
         # Start a transaction
-        cursor = db.cursor()
-        
-        # Parse the JSON
-        data = json.loads(json_input)
-        
+        db.start_transaction()
+        print("Transaction started.")
+
+        # Parse the JSON input
+        data = json.loads(json_input) if isinstance(json_input, str) else json_input
+        print("JSON parsed successfully:", data)
+
         # Get or create the sheet
         sheet_name = data["sheet_name"]
-        sheet_id = get_or_create_sheet(db, sheet_name)
-        
-        # Process each cell in the input
-        for cell in data["cells"]:
-            row_num = cell["row"]
-            col_num = cell["column"]
-            value = cell.get("value")  # Value can be None for deletion
+        print(f"Sheet name: {sheet_name}")
+        sheet_id = get_or_create_sheet(db, cursor, sheet_name)
+        print(f"Sheet ID: {sheet_id}")
 
-            if cell.get("operation") == "delete":
-                if "row" in cell:
-                    delete_row_or_column(db, sheet_id, row_num=row_num)
-                if "column" in cell:
-                    delete_row_or_column(db, sheet_id, col_num=col_num)
+        # Process each cell in the input
+        for cell in data.get("cells", []):
+            row_num = cell.get("row")
+            col_num = cell.get("column")
+            value = cell.get("value")  # Value can be None for deletion
+            operation = cell.get("operation", "upsert")
+            print(f"Processing cell - Row: {row_num}, Column: {col_num}, Value: {value}, Operation: {operation}")
+
+            if operation == "delete":
+                if row_num is not None and col_num is not None:
+                    print(f"Deleting cell at Row: {row_num}, Column: {col_num}")
+                    delete_cell(cursor, sheet_id, row_num, col_num)
+                elif row_num is not None:
+                    print(f"Deleting row: {row_num}")
+                    delete_row_or_column(cursor, sheet_id, row_num=row_num)
+                elif col_num is not None:
+                    print(f"Deleting column: {col_num}")
+                    delete_row_or_column(cursor, sheet_id, col_num=col_num)
+                else:
+                    print("No valid row or column specified for deletion.")
             else:
-                # Handle insert or update
-                upsert_cell(db, sheet_id, row_num, col_num, value)
-        
+                print(f"Upserting cell at Row: {row_num}, Column: {col_num}, Value: {value}")
+                upsert_cell(cursor, sheet_id, row_num, col_num, value)
+
         # Commit the transaction
         db.commit()
+        print("Transaction committed.")
 
     except mysql.connector.Error as err:
         # Rollback transaction in case of any error
         db.rollback()
-        return f"Error: {err}"
+        print(f"Database Error during sync: {err}")
     except json.JSONDecodeError as json_err:
         print(f"JSON parsing error: {json_err}")
     except Exception as e:
         # Handle any other exceptions
         db.rollback()
-        return f"Unexpected error: {e}"
+        print(f"Unexpected error during sync: {e}")
     finally:
         cursor.close()
+        print("Cursor closed.")
 
-# Function to find or create a sheet with exception handling
-def get_or_create_sheet(db, sheet_name):
+def get_or_create_sheet(db, cursor, sheet_name):
     try:
-        cursor = db.cursor()
+        print(f"Fetching sheet with name: {sheet_name}")
         cursor.execute("SELECT id FROM sheets WHERE name = %s", (sheet_name,))
         sheet = cursor.fetchone()
 
         if sheet is None:
+            print(f"Sheet not found, creating new sheet: {sheet_name}")
             cursor.execute("INSERT INTO sheets (name) VALUES (%s)", (sheet_name,))
-            db.commit()
-            return cursor.lastrowid
+            sheet_id = cursor.lastrowid
+            print(f"New sheet created with ID: {sheet_id}")
+            return sheet_id
+        print(f"Sheet found with ID: {sheet[0]}")
         return sheet[0]
     except mysql.connector.Error as err:
-        db.rollback()
-        return f"Error in get_or_create_sheet: {err}"
-    finally:
-        cursor.close()
+        print(f"Error in get_or_create_sheet: {err}")
+        raise
+    except Exception as e:
+        print(f"Unexpected error in get_or_create_sheet: {e}")
+        raise
 
-# Function to update or insert cell data with exception handling
-def upsert_cell(db, sheet_id, row_num, col_num, value):
+def upsert_cell(cursor, sheet_id, row_num, col_num, value):
     try:
-        cursor = db.cursor()
+        if row_num is None or col_num is None:
+            print("Row number and column number must be provided for upsert operation.")
+            return
+        print(f"Processing upsert for cell at row {row_num}, column {col_num}")
+
+        if value is None or value == "":
+            print(f"Value is None, deleting cell at row {row_num}, column {col_num}")
+            delete_cell(cursor, sheet_id, row_num, col_num)
+            return
 
         # Check if the cell exists
-        cursor.execute("""
+        query = """
             SELECT id FROM cells 
-            WHERE sheet_id = %s AND row_number = %s AND column_number = %s
-        """, (sheet_id, row_num, col_num))
+            WHERE sheet_id = %s AND `row_number` = %s AND `column_number` = %s
+        """
+        print(f"Executing query to check if cell exists with sheet_id={sheet_id}, row_number={row_num}, column_number={col_num}")
+        cursor.execute(query, (sheet_id, row_num, col_num))
         cell = cursor.fetchone()
 
         if cell:
-            # Update the existing cell value
-            if value is not None:
-                cursor.execute("""
-                    UPDATE cells 
-                    SET value = %s 
-                    WHERE id = %s
-                """, (value, cell[0]))
-            else:
-                # Set the value to NULL (for delete operation)
-                cursor.execute("""
-                    UPDATE cells 
-                    SET value = NULL 
-                    WHERE id = %s
-                """, (cell[0],))
+            print(f"Cell exists with ID {cell[0]}, updating value.")
+            update_query = """
+                UPDATE cells 
+                SET value = %s, updated_at = CURRENT_TIMESTAMP
+                WHERE id = %s
+            """
+            print(f"Executing update query with value: {value}, id: {cell[0]}")
+            cursor.execute(update_query, (value, cell[0]))
+            print(f"Updated cell at row {row_num}, col {col_num} with value: {value}")
         else:
-            # Insert new cell data
-            cursor.execute("""
-                INSERT INTO cells (sheet_id, row_number, column_number, value)
+            print(f"Cell does not exist, inserting new cell.")
+            insert_query = """
+                INSERT INTO cells (sheet_id, `row_number`, `column_number`, value)
                 VALUES (%s, %s, %s, %s)
-            """, (sheet_id, row_num, col_num, value))
-        
-        db.commit()
+            """
+            print(f"Executing insert query with sheet_id={sheet_id}, row_number={row_num}, column_number={col_num}, value={value}")
+            cursor.execute(insert_query, (sheet_id, row_num, col_num, value))
+            print(f"Inserted new cell at row {row_num}, col {col_num} with value: {value}")
     except mysql.connector.Error as err:
-        db.rollback()
-        return f"Error in upsert_cell: {err}"
-    finally:
-        cursor.close()
+        print(f"Error in upsert_cell: {err}")
+        raise
+    except Exception as e:
+        print(f"Unexpected error in upsert_cell: {e}")
+        raise
 
-# Function to handle deleting a row or column with exception handling
-def delete_row_or_column(db, sheet_id, row_num=None, col_num=None):
+def delete_cell(cursor, sheet_id, row_num, col_num):
     try:
-        cursor = db.cursor()
-
-        if row_num is not None:
-            cursor.execute("DELETE FROM cells WHERE sheet_id = %s AND row_number = %s", (sheet_id, row_num))
-        if col_num is not None:
-            cursor.execute("DELETE FROM cells WHERE sheet_id = %s AND column_number = %s", (sheet_id, col_num))
-        
-        db.commit()
+        print(f"Deleting cell at row {row_num}, column {col_num} from sheet {sheet_id}")
+        delete_query = """
+            DELETE FROM cells 
+            WHERE sheet_id = %s AND `row_number` = %s AND `column_number` = %s
+        """
+        cursor.execute(delete_query, (sheet_id, row_num, col_num))
+        print(f"Deleted cell at row {row_num}, column {col_num} from sheet {sheet_id}")
     except mysql.connector.Error as err:
-        db.rollback()
-        return f"Error in delete_row_or_column: {err}"
-    finally:
-        cursor.close()
+        print(f"Error in delete_cell: {err}")
+        raise
+    except Exception as e:
+        print(f"Unexpected error in delete_cell: {e}")
+        raise
 
+def delete_row_or_column(cursor, sheet_id, row_num=None, col_num=None):
+    try:
+        if row_num is not None:
+            print(f"Deleting row {row_num} from sheet {sheet_id}")
+            delete_query = "DELETE FROM cells WHERE sheet_id = %s AND `row_number` = %s"
+            cursor.execute(delete_query, (sheet_id, row_num))
+            print(f"Deleted row {row_num} from sheet {sheet_id}")
 
+        if col_num is not None:
+            print(f"Deleting column {col_num} from sheet {sheet_id}")
+            delete_query = "DELETE FROM cells WHERE sheet_id = %s AND `column_number` = %s"
+            cursor.execute(delete_query, (sheet_id, col_num))
+            print(f"Deleted column {col_num} from sheet {sheet_id}")
 
-# # Example JSON input
-# json_input = '''
-# {
-#     "sheet_name": "Sheet1",
-#     "cells": [
-#         {"row": 1, "column": 1, "value": "Product A"},
-#         {"row": 1, "column": 2, "value": "Description A"},
-#         {"row": 2, "column": 1, "value": "Product B"},
-#         {"row": 2, "column": 2, "value": null, "operation": "delete"},  # Delete value from this cell
-#         {"row": 3, "column": 1, "operation": "delete"}  # Delete entire row
-#     ]
-# }
-# '''
+    except mysql.connector.Error as err:
+        print(f"Error in delete_row_or_column: {err}")
+        raise
+    except Exception as e:
+        print(f"Unexpected error in delete_row_or_column: {e}")
+        raise
 
-# Sync the data
-# sync_sheet_from_json(db, json_input)
+# Example usage
+if __name__ == "__main__":
+    # Example JSON input
+    json_input = '''
+    {
+        "sheet_name": "Sheet2",
+        "cells": [
+            {"row": 3, "column": 3, "value": "bossman", "operation": "insert"},
+            {"row": 3, "column": 3, "operation": "delete"},
+            {"row": 2, "operation": "delete"},
+            {"column": 2, "operation": "delete"}
+        ]
+    }
+    '''
 
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="your_mysql_password",  # Replace with your MySQL root password
+        database="google_sheet_mimic"
+    )
 
+    print("Starting sync process...")
+    sync_sheet_from_json(db, json_input)
+    print("Sync process complete.")
+    db.close()
