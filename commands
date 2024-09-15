@@ -1,0 +1,7 @@
+#Start Kafka
+
+zookeeper-server-start.bat C:\kafka_2.13-3.8.0\config\zookeeper.properties
+kafka-server-start.bat C:\kafka_2.13-3.8.0\config\server.properties
+
+
+mysqladmin -u root -p shutdown
