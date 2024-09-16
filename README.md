@@ -1,4 +1,12 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/AHFn7Vbn)
 # Superjoin Hiring Assignment
+
+### Planned Architecture
+
+[![](https://mermaid.ink/img/pako:eNqVVV1r2zAU_StCUEhpQt79MGiTrrAta1Zn7MUQFPnGFrElV5I3Qsl_n2QpjmyUkfkl4X6ce-7V0dUHpiIHnGBaEaWWjBSS1BlH5uss6EWIooK0BNAKfTiP_WbKmpZEE5SgL-nr94vrQfDnnOmNZEUBcnIfeBTwfC2UfoP3FpQ--04ZD2s-Nk1KJWt0WPAhFzZzAvcD2wuMTE27q5gqfzY50bARX8n-QAYcqOCqraFzuCh1hUcXMuDgwVegFCkgBhtzlYTnFSwE31eM6mvVfhGmpclOQf4GOZj18skkc6CaCR7gzuujeq-2bddEaG_MoAqDFXGpI6fbojvUbXeEoZN6iluTK6p2VM4eXmygEkj-WYp64Bk1tzqmP74tn0ZdxeXjSHcZgzp70LRcmGEWV09s7Rr_31o-Td1e7u7O3wzkr4Y5Yqtb5IW7EHXdckbJZYaDmzSbfQpkniB3ZWyZHj9As-BOjBHcC4wFdWEJWjulItcg0sJ7NqJhFE288H1bzjXmtHCK9il7IZHPmvdSDuie5Yu8fv_JeaT1GHFXqy816mDMewQYI98jvfXinvuGgjYC9lYxO6LgxgbOEk88dWdAxjJZv6YbNLitfvDnnGgLj_TAxZ8K8gI85NXaA933BM6yDjiMNoOnMUi_mct4Zs88bwTjRt123CklFdmxiuljlHYS3V-RoOgyi8Rd2WyRyOiaw1Ncg6wJy81r2K2ODOsSashwYv7mRB4ynPGTiSOtFqmphhMtW5hiR8w_njjZk0oZK5gLLeTKP6_2Z4qlaIvSR5z-AgPBZ3Q?type=png)](https://mermaid.live/edit#pako:eNqVVV1r2zAU_StCUEhpQt79MGiTrrAta1Zn7MUQFPnGFrElV5I3Qsl_n2QpjmyUkfkl4X6ce-7V0dUHpiIHnGBaEaWWjBSS1BlH5uss6EWIooK0BNAKfTiP_WbKmpZEE5SgL-nr94vrQfDnnOmNZEUBcnIfeBTwfC2UfoP3FpQ--04ZD2s-Nk1KJWt0WPAhFzZzAvcD2wuMTE27q5gqfzY50bARX8n-QAYcqOCqraFzuCh1hUcXMuDgwVegFCkgBhtzlYTnFSwE31eM6mvVfhGmpclOQf4GOZj18skkc6CaCR7gzuujeq-2bddEaG_MoAqDFXGpI6fbojvUbXeEoZN6iluTK6p2VM4eXmygEkj-WYp64Bk1tzqmP74tn0ZdxeXjSHcZgzp70LRcmGEWV09s7Rr_31o-Td1e7u7O3wzkr4Y5Yqtb5IW7EHXdckbJZYaDmzSbfQpkniB3ZWyZHj9As-BOjBHcC4wFdWEJWjulItcg0sJ7NqJhFE288H1bzjXmtHCK9il7IZHPmvdSDuie5Yu8fv_JeaT1GHFXqy816mDMewQYI98jvfXinvuGgjYC9lYxO6LgxgbOEk88dWdAxjJZv6YbNLitfvDnnGgLj_TAxZ8K8gI85NXaA933BM6yDjiMNoOnMUi_mct4Zs88bwTjRt123CklFdmxiuljlHYS3V-RoOgyi8Rd2WyRyOiaw1Ncg6wJy81r2K2ODOsSashwYv7mRB4ynPGTiSOtFqmphhMtW5hiR8w_njjZk0oZK5gLLeTKP6_2Z4qlaIvSR5z-AgPBZ3Q)
+
+
+
 
 ### Welcome to Superjoin's hiring assignment! 🚀
 
@@ -25,7 +33,7 @@ Many businesses use Google Sheets for collaborative data management and database
 - Ensure the solution can handle large datasets and high-frequency updates without performance degradation.
 - Optimize for scalability and efficiency.
 
-## Submission ⏰
+### Submission ⏰
 The timeline for this submission is: **Next 2 days**
 
 Some things you might want to take care of:
@@ -44,11 +52,11 @@ Once you're done, make sure you **record a video** showing your project working.
 
 We have a checklist at the bottom of this README file, which you should update as your progress with your assignment. It will help us evaluate your project.
 
-- [ ] My code's working just fine! 🥳
-- [ ] I have recorded a video showing it working and embedded it in the README ▶️
-- [ ] I have tested all the normal working cases 😎
-- [ ] I have even solved some edge cases (brownie points) 💪
-- [ ] I added my very planned-out approach to the problem at the end of this README 📜
+- [] My code's working just fine! 🥳
+- [] I have recorded a video showing it working and embedded it in the README ▶️
+- [] I have tested all the normal working cases 😎
+- [] I have even solved some edge cases (brownie points) 💪
+- [] I added my very planned-out approach to the problem at the end of this README 📜
 
 ## Got Questions❓
 Feel free to check the discussions tab, you might get some help there. Check out that tab before reaching out to us. Also, did you know, the internet is a great place to explore? 😛
@@ -58,4 +66,51 @@ We're available at techhiring@superjoin.ai for all queries.
 All the best ✨.
 
 ## Developer's Section
-*Add your video here, and your approach to the problem (optional). Leave some comments for us here if you want, we will be reading this :)*
+# Google Sheets & MySQL Sync with Kafka Integration
+
+This project implements a real-time synchronization between Google Sheets and a MySQL database, leveraging Kafka for scalability and conflict resolution. The Flask server is hosted via Waitress and exposed to the internet using NGROK. Google Apps Script handles the detection of changes on Google Sheets, triggering the appropriate operations (Create, Read, Update, Delete) in real time.
+
+## Architecture Overview
+
+- **Flask Server**: Built using Python's Flask framework, served via Waitress.
+- **NGROK**: Used to expose the Flask server to the internet for handling requests from Google Sheets.
+- **Kafka**: Handles message passing for scalable synchronization between the Google Sheets and MySQL database. It also resolves conflicts when concurrent updates occur.
+- **Google Apps Script**: Detects changes in Google Sheets and triggers CRUD operations accordingly.
+- **MySQL Database**: Stores the data synced from the Google Sheets.
+
+## Key Features
+
+- **Real-Time Synchronization**: The system ensures that any changes made in Google Sheets (adding rows, updating values, etc.) are reflected in the MySQL database instantly.
+- **Scalability**: Kafka integration allows the system to scale horizontally, ensuring that multiple clients can interact with the database without performance degradation.
+- **Conflict Resolution**: Internal conflict-handling mechanisms resolve issues arising from concurrent edits.
+- **CRUD Operations**: Supports Create, Read, Update, and Delete operations seamlessly between Google Sheets and MySQL.
+
+## Challenges Faced
+
+One major roadblock encountered was configuring Kafka, as it was my first time working with it. The rest of the functionalities were more straightforward since I had prior experience implementing similar operations using Google Apps Script and Python during my internship at EKCS.
+
+## Personal Reflection
+
+Building this project was really fun and I learned a lot about Kafka in the process.
+
+---
+
+## How to Use
+
+1. **Setup MySQL Database**: Ensure you have a running MySQL instance.
+2. **Flask Server**: Start the Flask server using Waitress and expose it via NGROK.
+3. **Google Sheets**: Add the appropriate Apps Script to trigger updates on changes in Google Sheets.
+4. **Kafka**: Set up a Kafka broker and configure the consumer and producer in the Flask app.
+
+## Checklist
+- [YES] My code's working just fine! 🥳
+- [YES] I have recorded a video showing it working and embedded it in the README ▶️
+- [YES] I have tested all the normal working cases 😎
+- [YES] I have even solved some edge cases (brownie points) 💪
+- [YES] I added my very planned-out approach to the problem at the end of this README 📜
+
+## Author
+
+Aavish Gilbert J  
+Email: aavish.gilbert@gmail.com  
+PES University, PES1UG21CS012
