@@ -75,7 +75,7 @@ This project implements a real-time synchronization between Google Sheets and a 
 - **Flask Server**: Built using Python's Flask framework, served via Waitress.
 - **NGROK**: Used to expose the Flask server to the internet for handling requests from Google Sheets.
 - **Kafka**: Handles message passing for scalable synchronization between the Google Sheets and MySQL database. It also resolves conflicts when concurrent updates occur.
-- **Google Apps Script**: Detects changes in Google Sheets (onEdit) and triggers CRUD operations accordingly.
+- **Google Apps Script**: Detects changes in Google Sheets and triggers CRUD operations accordingly.
 - **MySQL Database**: Stores the data synced from the Google Sheets.
 
 ## Key Features
@@ -106,4 +106,4 @@ Building this project was really fun and I learned a lot about Kafka in the proc
 
 Aavish Gilbert J  
 Email: aavish.gilbert@gmail.com  
-PES University, Roll Number: PES1UG21CS012
+PES University, PES1UG21CS012
