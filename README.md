@@ -33,7 +33,7 @@ Many businesses use Google Sheets for collaborative data management and database
 - Ensure the solution can handle large datasets and high-frequency updates without performance degradation.
 - Optimize for scalability and efficiency.
 
-## Submission ⏰
+### Submission ⏰
 The timeline for this submission is: **Next 2 days**
 
 Some things you might want to take care of:
@@ -66,35 +66,44 @@ We're available at techhiring@superjoin.ai for all queries.
 All the best ✨.
 
 ## Developer's Section
-### DEMO Video
-https://drive.google.com/file/d/18NcHJFeRSfQ9IOGx4iLDHjqH73XrxyQF/view?usp=sharing
+# Google Sheets & MySQL Sync with Kafka Integration
 
-##Google Sheets & MySQL Sync with Kafka Integration
 This project implements a real-time synchronization between Google Sheets and a MySQL database, leveraging Kafka for scalability and conflict resolution. The Flask server is hosted via Waitress and exposed to the internet using NGROK. Google Apps Script handles the detection of changes on Google Sheets, triggering the appropriate operations (Create, Read, Update, Delete) in real time.
 
-##Architecture Overview
-Flask Server: Built using Python's Flask framework, served via Waitress.
-NGROK: Used to expose the Flask server to the internet for handling requests from Google Sheets.
-Kafka: Handles message passing for scalable synchronization between the Google Sheets and MySQL database. It also resolves conflicts when concurrent updates occur.
-Google Apps Script: Detects changes in Google Sheets (onEdit) and triggers CRUD operations accordingly.
-MySQL Database: Stores the data synced from the Google Sheets.
-##Key Features
-#Real-Time Synchronization: The system ensures that any changes made in Google Sheets (adding rows, updating values, etc.) are reflected in the MySQL database instantly.
-Scalability: Kafka integration allows the system to scale horizontally, ensuring that multiple clients can interact with the database without performance degradation.
-#Conflict Resolution: Internal conflict-handling mechanisms resolve issues arising from concurrent edits.
-#CRUD Operations: Supports Create, Read, Update, and Delete operations seamlessly between Google Sheets and MySQL.
-##Challenges Faced
+## Architecture Overview
+
+- **Flask Server**: Built using Python's Flask framework, served via Waitress.
+- **NGROK**: Used to expose the Flask server to the internet for handling requests from Google Sheets.
+- **Kafka**: Handles message passing for scalable synchronization between the Google Sheets and MySQL database. It also resolves conflicts when concurrent updates occur.
+- **Google Apps Script**: Detects changes in Google Sheets (onEdit) and triggers CRUD operations accordingly.
+- **MySQL Database**: Stores the data synced from the Google Sheets.
+
+## Key Features
+
+- **Real-Time Synchronization**: The system ensures that any changes made in Google Sheets (adding rows, updating values, etc.) are reflected in the MySQL database instantly.
+- **Scalability**: Kafka integration allows the system to scale horizontally, ensuring that multiple clients can interact with the database without performance degradation.
+- **Conflict Resolution**: Internal conflict-handling mechanisms resolve issues arising from concurrent edits.
+- **CRUD Operations**: Supports Create, Read, Update, and Delete operations seamlessly between Google Sheets and MySQL.
+
+## Challenges Faced
+
 One major roadblock encountered was configuring Kafka, as it was my first time working with it. The rest of the functionalities were more straightforward since I had prior experience implementing similar operations using Google Apps Script and Python during my internship at EKCS.
 
-##Personal Reflection
-Had my entire weekend occupied with it and was really fun, I learned a lot about Kafka in the process.
+## Personal Reflection
 
-##How to Use
-Setup MySQL Database: Ensure you have a running MySQL instance.
-Flask Server: Start the Flask server using Waitress and expose it via NGROK.
-Google Sheets: Add the appropriate Apps Script to trigger updates on changes in Google Sheets.
-Kafka: Set up a Kafka broker and configure the consumer and producer in the Flask app.
-##Author
-Aavish Gilbert J
-Email: aavish.gilbert@gmail.com
-PES University, PES1UG21CS012
+Building this project was really fun and I learned a lot about Kafka in the process.
+
+---
+
+## How to Use
+
+1. **Setup MySQL Database**: Ensure you have a running MySQL instance.
+2. **Flask Server**: Start the Flask server using Waitress and expose it via NGROK.
+3. **Google Sheets**: Add the appropriate Apps Script to trigger updates on changes in Google Sheets.
+4. **Kafka**: Set up a Kafka broker and configure the consumer and producer in the Flask app.
+
+## Author
+
+Aavish Gilbert J  
+Email: aavish.gilbert@gmail.com  
+PES University, Roll Number: PES1UG21CS012
