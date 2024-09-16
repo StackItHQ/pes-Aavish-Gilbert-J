@@ -248,7 +248,7 @@
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=5000)
 
-
+#==========================================================================================
 from flask import Flask, request, jsonify
 import logging
 import threading
@@ -257,6 +257,7 @@ import json
 import time
 from twoWayKafka import KafkaHandler
 from dbCode.mysqlScript import sync_sheet_from_json
+import requests
 
 logging.basicConfig(level=logging.INFO)
 
@@ -306,6 +307,69 @@ def read_last_id():
 def write_last_id(last_id):
     with open('last_id.txt', 'w') as f:
         f.write(str(last_id))
+
+import json
+import os
+
+import json
+import os
+
+import json
+import os
+
+def update_sheet(input_data):
+    # Define the file name for the data
+    file_name = 'data.json'
+    
+    # Create the structure to hold the changes for the current input
+    change_entry = {
+        "row_number": input_data['row_number'],
+        "column_number": input_data['column_number'],
+        "value": input_data.get('value', ''),
+        "operation": input_data['operation'],
+        "changed_by": input_data['changed_by'],
+        "changed_at": input_data['changed_at'],
+        "is_current": input_data['is_current']
+    }
+    
+    # Initialize an empty structure
+    data = {"sheets": []}
+    
+    # Load the existing file if it exists and contains valid JSON
+    if os.path.exists(file_name):
+        try:
+            with open(file_name, 'r') as file:
+                file_content = file.read().strip()
+                if file_content:
+                    data = json.loads(file_content)
+        except json.JSONDecodeError:
+            print(f"Warning: {file_name} contains invalid JSON. Reinitializing.")
+            data = {"sheets": []}
+    
+    # Find the sheet in the JSON structure, or add a new sheet entry
+    sheet_found = False
+    for sheet in data['sheets']:
+        if sheet['sheet_id'] == input_data['sheet_id']:
+            sheet['changes'].append(change_entry)
+            sheet_found = True
+            break
+    
+    # If the sheet does not exist, create a new sheet entry
+    if not sheet_found:
+        new_sheet = {
+            "sheet_id": input_data['sheet_id'],
+            "changes": [change_entry]
+        }
+        data['sheets'].append(new_sheet)
+    
+    # Save the updated data back to the file
+    with open(file_name, 'w') as file:
+        json.dump(data, file, indent=4)
+    
+    return data
+
+
+
 
 # --- Cells Monitoring Function (C) ---
 def monitor_cells(kafka_handler_cells, db_config):
@@ -393,6 +457,11 @@ def run_cells_consumer(kafka_handler_cells):
 
         # Simulate processing the request and send a response
         correlation_id = msg.get('correlation_id')
+
+        
+        logging.info("++++++++++++++++++++++++++")
+        response_data = update_sheet(msg)
+        logging.info(f"Response from Google Apps Script: {response_data}")
         if correlation_id:
             response = {
                 'status': 'success',
@@ -448,6 +517,27 @@ def kafka_publish():
     # Send a request and wait for a response
     response = kafka_handler.send_request(data, timeout=10)
     return jsonify(response)
+
+FILE_PATH = 'data.json'
+@app.route('/updateSheet', methods=['POST'])
+def read_json_from_file():
+    """
+    Endpoint to read stored JSON from a file and return it as a response.
+    """
+    try:
+        # Open and read the JSON file
+        with open(FILE_PATH, 'r') as file:
+            data = json.load(file)  # Parse the JSON content
+        # print(data)
+        # Return the JSON data as a response
+        return jsonify(data)
+    
+    except FileNotFoundError:
+        return jsonify({"status": "error", "message": "File not found"}), 404
+    except json.JSONDecodeError:
+        return jsonify({"status": "error", "message": "Error decoding JSON"}), 400
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # Start Flask server
 if __name__ == '__main__':
